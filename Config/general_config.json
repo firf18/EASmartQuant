@@ -1,0 +1,11 @@
+{
+    "logs_habilitados": true,
+    "tiempo_espera_ordenes": 5000,
+    "maximo_riesgo_por_operacion": 2.5,
+    "activos": ["EURUSD", "GBPUSD", "USDJPY"],
+    "estrategias": {
+        "EURUSD": ["PriceAction", "Breakout"],
+        "GBPUSD": ["PivotPoints"],
+        "USDJPY": ["Candlestick"]
+    }
+}
