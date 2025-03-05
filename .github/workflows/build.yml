@@ -22,11 +22,13 @@ jobs:
     - name: Validar mensajes de commits
       shell: bash  # ⚠️ Se ejecuta en Bash para evitar errores en PowerShell
       run: |
-        COMMIT_MSG=$(git log --format=%B -n 1)
-        if [[ "$COMMIT_MSG" =~ ^(feat|fix|chore|docs|test): ]]; then
+        COMMIT_MSG=$(git log --format=%B -n 1 | tr -d '\n' | tr -d '\r')  # Elimina saltos de línea
+        echo "📝 Último commit: '$COMMIT_MSG'"
+        
+        if [[ "$COMMIT_MSG" =~ ^(feat|fix|chore|docs|test):\ .* ]]; then
           echo "✅ Commit message válido"
         else
-          echo "❌ Commit message inválido. Debe comenzar con feat:, fix:, chore:, docs:, test:"
+          echo "❌ Commit message inválido. Debe comenzar con 'feat:', 'fix:', 'chore:', 'docs:', 'test:'"
           exit 1
         fi
 
