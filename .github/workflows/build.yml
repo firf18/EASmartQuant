@@ -28,6 +28,11 @@ jobs:
           exit 1
         fi
 
+    - name: Instalar MetaTrader 5
+      run: |
+        Invoke-WebRequest -Uri "https://download.mql5.com/cdn/web/metaquotes.software/metatrader5/mt5setup.exe" -OutFile "mt5setup.exe"
+        Start-Process -FilePath "mt5setup.exe" -ArgumentList "/silent" -Wait
+
     - name: Compilar archivos MQL5 con MetaEditor
       run: |
         $MT5_PATH="C:\Program Files\MetaTrader 5"
@@ -38,7 +43,7 @@ jobs:
         }
         Write-Host "✅ MetaEditor encontrado, compilando archivos..."
         Get-ChildItem -Path . -Include *.mq5, *.mqh -Recurse | ForEach-Object {
-          & "$METAEDITOR" //compile $_.FullName
+          & "$METAEDITOR" /compile $_.FullName /log
           if ($LASTEXITCODE -ne 0) {
             Write-Host "❌ Error al compilar: $_.FullName"
             exit 1
@@ -46,8 +51,13 @@ jobs:
         }
         Write-Host "✅ Todos los archivos MQL5 fueron compilados correctamente."
 
+  notify:
+    runs-on: ubuntu-latest
+    needs: validate  # Solo se ejecuta si la validación fue exitosa
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
     - name: Notificar en Telegram si se aprueba un PR en main
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
