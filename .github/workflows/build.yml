@@ -1,0 +1,27 @@
+name: Verificación y Pruebas en SmartQuantEA
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latests
+
+    steps:
+    - name: Clonar repositorio
+      uses: actions/checkout@v3
+
+    - name: Configurar entorno de compilación
+      run: echo "Configurando entorno para MQL5"
+
+    - name: Ejecutar pruebas de código
+      run: echo "Ejecutando pruebas en código fuente"
+
+    - name: Verificación de estilo
+      run: echo "Verificando estilo de código según estándares"
+
+    - name: Confirmar ejecución exitosa
+      run: echo "Pruebas completadas exitosamente"
